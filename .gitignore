@@ -1,2 +1,49 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build output directories
+bin/
 obj/
+out/
+
+## NuGet packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Logs
+*.log
+
+## Environment files
+*.env
+
+## Database (optional — only if using local dev DB files)
+*.mdf
+*.ldf
+
+## Rider (JetBrains IDE)
+.idea/
+
+## Mac system files
+.DS_Store
+
+## Windows Thumbnail Cache
+Thumbs.db
+
+## Node modules (if using front-end with npm)
+node_modules/
+
+## Publish artifacts
+wwwroot/dist/
+wwwroot/node_modules/
+
+## Other common exclusions
+*.db
