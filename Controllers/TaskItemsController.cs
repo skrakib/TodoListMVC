@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TodoListMVC.Models;
+using X.PagedList;
+using X.PagedList.Extensions;
 
-namespace TodoListMVC.Migrations
+
+namespace TodoListMVC.Controllers
 {
     public class TaskItemsController : Controller
     {
@@ -19,10 +22,47 @@ namespace TodoListMVC.Migrations
         }
 
         // GET: TaskItems
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string searchString, string sortOrder, int? page)
         {
-            return View(await _context.Tasks.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+
+            var tasks = _context.Tasks.AsQueryable();
+
+            // Filter by searchString only
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                tasks = tasks.Where(t => t.Title.Contains(searchString)
+                                     || t.Description.Contains(searchString));
+            }
+
+            // Sorting logic (example)
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    tasks = tasks.OrderByDescending(t => t.CreatedAt);
+                    break;
+                case "status":
+                    tasks = tasks.OrderBy(t => t.Status);
+                    break;
+                case "status_desc":
+                    tasks = tasks.OrderByDescending(t => t.Status);
+                    break;
+                default:
+                    tasks = tasks.OrderBy(t => t.CreatedAt);
+                    break;
+            }
+
+            // Paging (assuming page size 5 or 10)
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            var pagedTasks = tasks.ToPagedList(pageNumber, pageSize);
+
+            return View(pagedTasks);
         }
+
+
 
         // GET: TaskItems/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,9 +88,6 @@ namespace TodoListMVC.Migrations
             return View();
         }
 
-        // POST: TaskItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,CreatedAt,UpdatedAt")] TaskItem taskItem)
@@ -80,9 +117,7 @@ namespace TodoListMVC.Migrations
             return View(taskItem);
         }
 
-        // POST: TaskItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,UpdatedAt")] TaskItem taskItem)
