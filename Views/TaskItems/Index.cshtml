@@ -2,58 +2,70 @@
 
 @{
     ViewData["Title"] = "Index";
+    var statusFilter = ViewData["StatusFilter"] as string;
+    var currentFilter = ViewData["CurrentFilter"] as string;
 }
 
-<h1>Index</h1>
+<h1>To-Do List</h1>
+
+<!-- Search and Filter Form -->
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <input type="text" name="searchString" value="@currentFilter" class="form-control mr-2" placeholder="Search..." />
+
+    <select name="statusFilter" class="form-control mr-2">
+        <option value="All" selected="@(statusFilter == "All" ? "selected" : null)">All</option>
+        <option value="Current" selected="@(statusFilter == "Current" ? "selected" : null)">Current</option>
+        <option value="Finished" selected="@(statusFilter == "Finished" ? "selected" : null)">Finished</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New Task</a>
 </p>
-<table class="table">
+
+<!-- Task Table -->
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["DateSortParam"]"
+                   asp-route-searchString="@currentFilter"
+                   asp-route-statusFilter="@statusFilter">
+                    Created Date
+                </a>
             </th>
+            <th>Title</th>
+            <th>Description</th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["StatusSortParam"]"
+                   asp-route-searchString="@currentFilter"
+                   asp-route-statusFilter="@statusFilter">
+                    Status
+                </a>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedAt)
-            </th>
-            <th></th>
+            <th>Updated At</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>@item.Status</td>
+                <td>@(item.UpdatedAt.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
