@@ -1,23 +1,16 @@
-﻿@model IEnumerable<TodoListMVC.Models.TaskItem>
+﻿@model X.PagedList.IPagedList<TodoListMVC.Models.TaskItem>
 
 @{
     ViewData["Title"] = "Index";
-    var statusFilter = ViewData["StatusFilter"] as string;
     var currentFilter = ViewData["CurrentFilter"] as string;
+    var currentSort = ViewData["CurrentSort"] as string;
 }
 
 <h1>To-Do List</h1>
 
-<!-- Search and Filter Form -->
 <form asp-action="Index" method="get" class="form-inline mb-3">
     <input type="text" name="searchString" value="@currentFilter" class="form-control mr-2" placeholder="Search..." />
-
-    <select name="statusFilter" class="form-control mr-2">
-        <option value="All" selected="@(statusFilter == "All" ? "selected" : null)">All</option>
-        <option value="Current" selected="@(statusFilter == "Current" ? "selected" : null)">Current</option>
-        <option value="Finished" selected="@(statusFilter == "Finished" ? "selected" : null)">Finished</option>
-    </select>
-
+    <!-- Removed the status filter dropdown -->
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
@@ -25,15 +18,13 @@
     <a asp-action="Create" class="btn btn-success">Create New Task</a>
 </p>
 
-<!-- Task Table -->
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>
                 <a asp-action="Index"
                    asp-route-sortOrder="@ViewData["DateSortParam"]"
-                   asp-route-searchString="@currentFilter"
-                   asp-route-statusFilter="@statusFilter">
+                   asp-route-searchString="@currentFilter">
                     Created Date
                 </a>
             </th>
@@ -42,8 +33,7 @@
             <th>
                 <a asp-action="Index"
                    asp-route-sortOrder="@ViewData["StatusSortParam"]"
-                   asp-route-searchString="@currentFilter"
-                   asp-route-statusFilter="@statusFilter">
+                   asp-route-searchString="@currentFilter">
                     Status
                 </a>
             </th>
@@ -59,7 +49,7 @@
                 <td>@item.Title</td>
                 <td>@item.Description</td>
                 <td>@item.Status</td>
-                <td>@(item.UpdatedAt.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                <td>@item.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
@@ -69,3 +59,12 @@
         }
     </tbody>
 </table>
+
+<div class="text-center">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+        {
+            page,
+            searchString = currentFilter,
+            sortOrder = currentSort
+        }))
+</div>
