@@ -1,49 +1,54 @@
-## Ignore Visual Studio temporary files, build results, and user-specific files
+# Visual Studio
 .vs/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
-## Build output directories
+# Build results
 bin/
 obj/
-out/
 
-## NuGet packages
+# IIS Express
+.vs/
+*.vspscc
+*.vssscc
+*.dbmdl
+*.dbproj.schemaview
+*.pdb
+
+# NuGet
 *.nupkg
-packages/
-project.lock.json
-project.fragment.lock.json
+# The packages folder can be ignored unless you're using a custom or offline feed.
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
 
-## ASP.NET Scaffolding
-ScaffoldingReadMe.txt
-
-## Logs
-*.log
-
-## Environment files
-*.env
-
-## Database (optional — only if using local dev DB files)
+# SQL Server local database
 *.mdf
 *.ldf
 
-## Rider (JetBrains IDE)
+# Others
+*.log
+*.tlog
+*.cache
+*.csproj.user
+*.db
+
+# Rider
 .idea/
 
-## Mac system files
-.DS_Store
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userprefs
 
-## Windows Thumbnail Cache
-Thumbs.db
+# Web publish settings
+Properties/PublishProfiles/
 
-## Node modules (if using front-end with npm)
-node_modules/
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
 
-## Publish artifacts
-wwwroot/dist/
-wwwroot/node_modules/
-
-## Other common exclusions
-*.db
+# Auto-generated files
+Generated_Code/

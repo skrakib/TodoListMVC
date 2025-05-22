@@ -20,8 +20,6 @@ namespace TodoListMVC.Controllers
         {
             _context = context;
         }
-
-        // GET: TaskItems
         public IActionResult Index(string searchString, string sortOrder, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -29,14 +27,14 @@ namespace TodoListMVC.Controllers
 
             var tasks = _context.Tasks.AsQueryable();
 
-            // Filter by searchString only
+            // searching filter!!
             if (!string.IsNullOrEmpty(searchString))
             {
                 tasks = tasks.Where(t => t.Title.Contains(searchString)
                                      || t.Description.Contains(searchString));
             }
 
-            // Sorting logic (example)
+            // Sorting logic
             switch (sortOrder)
             {
                 case "date_desc":
@@ -53,7 +51,7 @@ namespace TodoListMVC.Controllers
                     break;
             }
 
-            // Paging (assuming page size 5 or 10)
+            // Paging AFTER more pages creating.... ok!!
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
@@ -64,7 +62,7 @@ namespace TodoListMVC.Controllers
 
 
 
-        // GET: TaskItems/Details/5
+        // GET: TaskItems/Details/5 done....
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,8 +70,8 @@ namespace TodoListMVC.Controllers
                 return NotFound();
             }
 
-            var taskItem = await _context.Tasks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var taskItem = await _context.Tasks.FirstOrDefaultAsync(m => m.Id == id);
+
             if (taskItem == null)
             {
                 return NotFound();
@@ -82,17 +80,17 @@ namespace TodoListMVC.Controllers
             return View(taskItem);
         }
 
-        // GET: TaskItems/Create
+        // GET: TaskItems/Create ......
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]///eta malicious attack safety.
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,CreatedAt,UpdatedAt")] TaskItem taskItem)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) /// model er shob data check korbe.
             {
                 _context.Add(taskItem);
                 await _context.SaveChangesAsync();
@@ -101,7 +99,7 @@ namespace TodoListMVC.Controllers
             return View(taskItem);
         }
 
-        // GET: TaskItems/Edit/5
+        // GET: TaskItems/Edit/5 ///specific data edit with id
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
